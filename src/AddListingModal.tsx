@@ -20,18 +20,20 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({
   const [district, setDistrict] = useState('Lasnamäe');
   const [description, setDescription] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const isSubmittingRef = React.useRef(false);
 
   if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (isSubmitting) return;
+    if (isSubmittingRef.current) return;
 
     if (!title.trim()) {
       alert('Palun sisesta pealkiri!');
       return;
     }
 
+    isSubmittingRef.current = true;
     setIsSubmitting(true);
 
     try {
@@ -51,6 +53,7 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({
       setDescription('');
       onClose();
     } finally {
+      isSubmittingRef.current = false;
       setIsSubmitting(false);
     }
   };
