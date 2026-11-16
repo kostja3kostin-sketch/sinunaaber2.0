@@ -4,7 +4,7 @@ import {
   Compass, ArrowRight, X, User, Star, Award, MessageSquare, Bot, Euro, Camera, RotateCcw, Menu, MessageCircle, Sparkles, Clock, LogOut, LogIn, UserPlus, Upload, Phone, Mail, Calendar, ExternalLink
 } from 'lucide-react';
 import { supabase } from './supabaseClient';
-
+import { Analytics } from "@vercel/analytics/react";
 export default function App() {
   const [activeTab, setActiveTab] = useState<'map' | 'list' | 'showcase'>('map');
   const [selectedRegion, setSelectedRegion] = useState<string>('all');
@@ -2649,6 +2649,7 @@ export default function App() {
           </div>
         </div>
       )}
+      <Analytics />
     </div>
   );
 }
