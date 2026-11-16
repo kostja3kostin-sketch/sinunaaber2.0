@@ -19,31 +19,40 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({
   const [city, setCity] = useState('Tallinn');
   const [district, setDistrict] = useState('Lasnamäe');
   const [description, setDescription] = useState('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (isSubmitting) return;
+
     if (!title.trim()) {
       alert('Palun sisesta pealkiri!');
       return;
     }
 
-    onAdd({
-      title,
-      type,
-      conditions,
-      serviceType, // Saadame teenuse tüübi edasi
-      city,
-      district,
-      description,
-      createdAt: new Date().toISOString(),
-    });
+    setIsSubmitting(true);
 
-    // Puhasta vorm ja sulge
-    setTitle('');
-    setDescription('');
-    onClose();
+    try {
+      await onAdd({
+        title,
+        type,
+        conditions,
+        serviceType, // Saadame teenuse tüübi edasi
+        city,
+        district,
+        description,
+        createdAt: new Date().toISOString(),
+      });
+
+      // Puhasta vorm ja sulge
+      setTitle('');
+      setDescription('');
+      onClose();
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -197,11 +206,12 @@ export const AddListingModal: React.FC<AddListingModalProps> = ({
               Tühista
             </button>
             <button
-              type="submit"
-              className="px-5 py-2 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition-colors"
-            >
-              Avalda
-            </button>
+        type="submit"
+        disabled={isSubmitting}
+        className="px-5 py-2 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 transition-colors rounded-xl disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {isSubmitting ? 'Salvestan...' : 'Avalda'}
+      </button>
           </div>
         </form>
       </div>
